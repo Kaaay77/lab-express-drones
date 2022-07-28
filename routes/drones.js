@@ -44,20 +44,22 @@ router.get('/drones/edit/:id', (req, res, next) => {
 });
 
 router.post('/drones/edit/:id', (req, res, next) => {
-  const nameE = req.body.name;
-   const propellersE = req.body.propellers;
-   const maxSpeedE = req.body.maxSpeed;
-  
-   Dron.findByIdAndUpdate(
-     {id: req.body.id},
+  const {name, propellers, maxSpeed} = req.body;
+   const {id} = req.params
+  console.log(req.body);
+  console.log(req.params);
+
+
+   Dron.findByIdAndUpdate( id ,
      {   
-     name: nameE,
-     propellers: propellersE,
-     maxSpeed: maxSpeedE
-   })
+     name: name,
+     propellers: propellers,
+     maxSpeed: maxSpeed
+   },
+   { new: true })
 
    .then((response)=>{
-     res.redirect('/drones', {response})
+     res.redirect('/drones')
    })
    .catch(() =>{
      res.render('drones/update-form.hbs')
@@ -65,10 +67,14 @@ router.post('/drones/edit/:id', (req, res, next) => {
 });
 
 router.post('/drones/:id/delete', (req, res, next) => {
+  const {id} = req.params
   
-    Dron.findByIdAndDelete({id:req.params.id})
+    Dron.findByIdAndDelete(id)
     .then((response) =>{ 
       res.redirect('/drones')
+    })
+    .catch(() =>{
+      res.render('drones/update-form.hbs')
     })
 });
 
